@@ -13,17 +13,17 @@ class Deque {
   }
 
   //Add a state into the current states
-  public void addCurrentState(int state){
+  public void push(int state){
     currentStates.push(state);
   }
 
   //pop off the next state and return it
-  public Object getNextState(){
+  public Object get(){
     return currentStates.pop();
   }
 
   //adds a state to the queue of next states
-  public void addToNextStates(int state){
+  public void put(int state){
     nextStates.add(state);
   }
 
