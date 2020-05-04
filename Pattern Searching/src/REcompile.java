@@ -112,7 +112,7 @@ public class REcompile {
 		return(r);
 	}
 	
-	/*term method*/
+	/*term method*/ 
 	private static int term() {
 		//initialize variables
 		int r, t1, t2, f;
@@ -121,6 +121,10 @@ public class REcompile {
 		//if * sets states appropriately
 		if(isNotEmpty() && pattern.get(j)=='*') {
 			setState(state," ",state+1,t1);
+			if(f >= 0) {
+				next1.set(f, state);
+				next2.set(f, state);
+			}
 			j++;
 			r=state;
 			state++;
@@ -146,13 +150,16 @@ public class REcompile {
 		}
 		//if ? sets states appropriately
 		if(isNotEmpty() && pattern.get(j)=='?') {
-			j++;
-			String s = Character.toString(pattern.get(j));
-			setState(state,s,state+1, state+1);
-			next1.set(f, state);
+			setState(state," ",r, state+1);
+			if(f >= 0) {
+				next1.set(f, state);
+				next2.set(f, state);
+			}
+			f=state-1;
+			next1.set(f, state+1);
 			next2.set(f, state+1);
 			j++;
-			r=state;
+			r=state;  
 			state++;
 		}
 		//return initial state
