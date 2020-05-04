@@ -52,16 +52,20 @@ public class REsearch {
     Boolean firstRead = true;
 
     while((line = fsm.readLine()) != null){
+      //the initial state is outputted on the first line
       if(firstRead){
         startState = Integer.parseInt(line);
         firstRead = false;
       }
+
+      //the other lines consist of "stateNumber,character,next1,next2"
       String[] values = line.split(",");
       Integer stateNum = Integer.parseInt(values[0]);
       char c = values[1].charAt(0);
       Integer n1 = Integer.parseInt(values[2]);
       Integer n2 = Integer.parseInt(values[3]);
 
+      //add the entry to the finite state machine
       ch.add(stateNum, c);
   		next1.add(stateNum, n1);
   		next2.add(stateNum, n2);
