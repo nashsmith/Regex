@@ -1,12 +1,16 @@
+import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
+
 class Deque {
 
   private Stack currentStates;
-  private Queue nextStates;
+  private Queue<Integer> nextStates;
 
   //Constructors
   public Deque(){
     currentStates = new Stack();
-    nextStates = new Queue();
+    nextStates = new LinkedList<Integer>();
 
     //set SCAN
     currentStates.push("SCAN");
