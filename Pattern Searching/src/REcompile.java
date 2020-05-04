@@ -30,23 +30,11 @@ public class REcompile {
 		//set state
 		setState(state, " ", 0, 0);
 		//write arrays to file
-		FileWriter writer = new FileWriter("ch");
-		for(String c: ch) {
-			writer.write(c + System.lineSeparator());
+		FileWriter writer = new FileWriter("output");
+		writer.write(Integer.toString(initial) + System.lineSeparator());
+		for(int i = 0; i < ch.size(); i++) {
+			writer.write(Integer.toString(i) + ',' + ch.get(i) + ',' + next1.get(i) + ',' + next2.get(i) + System.lineSeparator());
 		}
-		writer.close();
-		writer = new FileWriter("next1");
-		for (int i: next1) {
-			writer.write(i + System.lineSeparator());
-		}
-		writer.close();
-		writer = new FileWriter("next2");
-		for (int i: next2) {
-			writer.write(i + System.lineSeparator());
-		}
-		writer.close();
-		writer = new FileWriter ("start");
-		writer.write(Integer.toString(initial));
 		writer.close();
 		
 	}
