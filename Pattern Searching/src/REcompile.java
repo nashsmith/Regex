@@ -107,13 +107,30 @@ public class REcompile {
 	/*expression method*/
 	private static int expression() {
 		int r;
+		int f;
+		int t1;
+		int t2;
 		//call term
-		r = term();
-		//call expression recursively if vocab or open parantheses
-		if(isNotEmpty()) {
-			if(isVocab(pattern.get(j))||pattern.get(j).equals("(")||pattern.get(j).equals("\\")){
-				expression();
+		f = state-1;
+		r = t1 = term();
+		//if | sets states appropriately
+		if(isNotEmpty() && pattern.get(j).equals("|")) {
+			if(f >= 0) {
+				if(next1.get(f)==next2.get(f)) {
+					next2.set(f, state);
+				}
+				next1.set(f, state);
 			}
+			f=state-1;
+			j++;
+			r=state;
+			state++;
+			t2=expression();
+			setState(r, " ", t1, t2);
+			if(next1.get(f)==next2.get(f)) {
+				next2.set(f,state);
+			}
+			next1.set(f, state);
 		}
 		//return initial state
 		return(r);
@@ -122,7 +139,7 @@ public class REcompile {
 	/*term method*/ 
 	private static int term() {
 		//initialize variables
-		int r, t1, t2, f;
+		int r, t1, f;
 		f = state - 1;
 		r = t1 = factor();
 		//if * sets states appropriately
@@ -135,25 +152,6 @@ public class REcompile {
 			j++;
 			r=state;
 			state++;
-		}
-		//if | sets states appropriately
-		if(isNotEmpty() && pattern.get(j).equals("|")) {
-			if(f > 0) {
-				if(next1.get(f)==next2.get(f)) {
-					next2.set(f, state);
-				}
-				next1.set(f, state);
-			}
-			f=state-1;
-			j++;
-			r=state;
-			state++;
-			t2=term();
-			setState(r, " ", t1, t2);
-			if(next1.get(f)==next2.get(f)) {
-				next2.set(f,state);
-			}
-			next1.set(f, state);
 		}
 		//if ? sets states appropriately
 		if(isNotEmpty() && pattern.get(j).equals("?")) {
@@ -170,6 +168,10 @@ public class REcompile {
 			j++;
 			r=state;  
 			state++;
+		}
+		//call expression recursively if vocab or open parantheses or backslash
+		if(isNotEmpty() && (isVocab(pattern.get(j)) || pattern.get(j).equals("(") || pattern.get(j).equals("\\"))) {
+			term();
 		}
 		//return initial state
 		return(r);
