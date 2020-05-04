@@ -6,18 +6,20 @@ T -> F*
 T -> F|T
 T -> F?
 T -> .
-T -> \F
+F -> \C
 F -> v
 F -> (E)
+
+E = expression
+T = term
+F = factor
+v = vocabulary
+C = any character
 
 Not legal examples
 **
 ??
-..
+.\
 (x
 x|
-x*|b -> should this be legal?
 x?|
-x.|b
-.?
-.|b
