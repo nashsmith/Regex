@@ -16,6 +16,21 @@ class Deque {
     currentStates.push("SCAN");
   }
 
+  public String toString(){
+    Object[] nxt = nextStates.toArray();
+    String s = "***\n" + currentStates.toString();
+    s += "\n---\n";
+    for(Object ob: nxt){
+      s += " " + ob.toString();
+    }
+    s += "\n***";
+    return s;
+  }
+
+  public boolean isEmpty(){
+    return (nextStates.peek() == null && currentStates.peek() == "SCAN");
+  }
+
   //Add a state into the current states
   public void push(int state){
     currentStates.push(state);
