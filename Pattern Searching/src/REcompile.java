@@ -3,8 +3,8 @@ import java.io.*;
 
 public class REcompile {
 	//Initialize pattern array and FSM 
-	public static List<Character> pattern = new ArrayList<Character>();
-	public static List<Character> ch = new ArrayList<Character>();
+	public static List<String> pattern = new ArrayList<String>();
+	public static List<String> ch = new ArrayList<String>();
 	public static List<Integer> next1 = new ArrayList<Integer>();
 	public static List<Integer> next2 = new ArrayList<Integer>();
 	public static int state;
@@ -13,49 +13,78 @@ public class REcompile {
 	/*Main Method*/
 	public static void main (String args[]) throws IOException {
 		//Take in pattern P (IO)
+		if(args.length > 1) {
+			error();
+		}
 		String line = args[0];
 		for(int i = 0; i < line.length(); i++) {
-			pattern.add(line.charAt(i));
+			pattern.add(line.substring(i,i+1));
 		}
 		/*Parsing and Compiling*/
 		//initialize state
 		state = 0;
 		j = 0;
+		//Check if empty or illegal characters
+		String spec ="?|*"; 
+		if(!isNotEmpty()|| spec.contains(pattern.get(j))) {
+			error();
+		}
 		//Call expression
 		int initial = expression();
-		//If p[j] != '\0' error()
-		if(pattern.get(j) != null) {
+		//Check if empty, if not error
+		if(isNotEmpty()) {
 			error();
 		}
 		//set state
-		setState(state, ' ', 0, 0);
+		setState(state, " ", -1, -1);
 		//write arrays to file
-		FileWriter writer = new FileWriter("ch");
-		for(char c: ch) {
-			writer.write(c + System.lineSeparator());
+		FileWriter writer = new FileWriter("output");
+		writer.write(Integer.toString(initial) + System.lineSeparator());
+		for(int i = 0; i < ch.size(); i++) {
+			writer.write(Integer.toString(i) + ',' + ch.get(i) + ',' + next1.get(i) + ',' + next2.get(i) + System.lineSeparator());
 		}
-		writer.close();
-		writer = new FileWriter("next1");
-		for (int i: next1) {
-			writer.write(i + System.lineSeparator());
-		}
-		writer.close();
-		writer = new FileWriter("next2");
-		for (int i: next2) {
-			writer.write(i + System.lineSeparator());
-		}
-		writer.close();
-		writer = new FileWriter ("start");
-		writer.write(initial);
 		writer.close();
 		
 	}
 	
 	/*set state method*/
-	private static void setState(int s, char c, int n1, int n2) {
-		ch.add(s, c);
-		next1.add(s, n1);
-		next2.add(s, n2);
+	private static void setState(int s, String c, int n1, int n2) {
+		//fills empty array with empty characters up to index to put in and sets state
+		if(s >= ch.size()) {
+			for(int i = (ch.size()); i < s; i++) {
+				if(i >= 0) {
+					ch.add(i, " ");
+				}
+			}
+			ch.add(s, c);
+
+		}
+		else {
+			ch.set(s, c);
+		}
+		if(s >= next1.size()) {
+			for(int i = (next1.size()); i < s; i++) {
+				if(i >= 0) {
+					next1.add(i, null);
+				}
+			}
+			next1.add(s, n1);
+		}
+		else {
+			next1.set(s, n1);
+		}
+		if(s >= next2.size()) {
+			for(int i = (next2.size()); i < s; i++) {
+				if(i >= 0) {
+					next2.add(i, null);
+				}
+			}
+			next2.add(s, n2);
+		}
+		else {
+
+			next2.set(s, n2);
+		}
 	}
 	
 	/*error method*/
@@ -64,68 +93,85 @@ public class REcompile {
 		System.exit(0);
 	}
 	
-	/*isVocab method - checks char to be not an operator*/
-	private static boolean isVocab(char c) {
-		if (c == '\\'||c == '?'||c != '('||c == ')'||c == '|'||c == '.'||c == '*'){
-			  return false;
-		}
-		return true;
+	/*isVocab method - checks string to be not an operator and valid character*/
+	private static boolean isVocab(String s) {
+		String spec="?|*\\()"; 
+		return !spec.contains(s);
+	}
+	
+	/*check if empty pattern*/
+	private static boolean isNotEmpty() {
+		return j < pattern.size();
 	}
 	
 	/*expression method*/
 	private static int expression() {
 		int r;
+		int f;
+		int t1;
+		int t2;
 		//call term
-		r = term();
-		//call expression recursively if vocab or open parantheses
-		if(isVocab(pattern.get(j))||pattern.get(j)=='('){
-			expression();
+		f = state-1;
+		r = t1 = term();
+		//if | sets states appropriately
+		if(isNotEmpty() && pattern.get(j).equals("|")) {
+			if(f >= 0) {
+				if(next1.get(f)==next2.get(f)) {
+					next2.set(f, state);
+				}
+				next1.set(f, state);
+			}
+			f=state-1;
+			j++;
+			r=state;
+			state++;
+			t2=expression();
+			setState(r, " ", t1, t2);
+			if(next1.get(f)==next2.get(f)) {
+				next2.set(f,state);
+			}
+			next1.set(f, state);
 		}
 		//return initial state
 		return(r);
 	}
 	
-	/*term method*/
+	/*term method*/ 
 	private static int term() {
 		//initialize variables
-		int r, t1, t2, f;
+		int r, t1, f;
 		f = state - 1;
 		r = t1 = factor();
-		//if *
-		if(pattern.get(j)=='*') {
-			setState(state,' ',state+1,t1);
+		//if * sets states appropriately
+		if(isNotEmpty() && pattern.get(j).equals("*")){
+			setState(state," ",state+1,t1);
+			if(f >= 0) {
+				next1.set(f, state);
+				next2.set(f, state);
+			}
 			j++;
 			r=state;
 			state++;
 		}
-		//if |
-		if(pattern.get(j)=='|') {
-			if(next1.get(f)==next2.get(f)) {
-				next2.add(f, state);
+		//if ? sets states appropriately
+		if(isNotEmpty() && pattern.get(j).equals("?")) {
+			setState(state," ",r, state+1);
+			if(f >= 0) {
+				next1.set(f, state);
+				next2.set(f, state);
 			}
-			next1.add(f, state);
 			f=state-1;
-			j++;
-			r=state;
-			state++;
-			t2=term();
-			setState(r, ' ', t1, t2);
-			if(next1.get(f)==next2.get(f)) {
-				next2.add(f,state);
+			if(f >= 0) {
+				next1.set(f, state+1);
+				next2.set(f, state+1);
 			}
-			next1.add(f, state);
+			j++;
+			r=state;  
+			state++;
 		}
-		//if ?
-		if(pattern.get(j)=='?') {
-			
-		}
-		//if \
-		if(pattern.get(j)=='\\') {
-			
-		}
-		//if .
-		if(pattern.get(j)=='.') {
-			
+		//call expression recursively if vocab or open parantheses or backslash
+		if(isNotEmpty() && (isVocab(pattern.get(j)) || pattern.get(j).equals("(") || pattern.get(j).equals("\\"))) {
+			term();
 		}
 		//return initial state
 		return(r);
@@ -140,18 +186,34 @@ public class REcompile {
 			r=state;
 			state++;
 		}
-		else if(pattern.get(j)=='(') {
+		else if(pattern.get(j).equals("(")) {
 			j++;
 			r=expression();
-			if(pattern.get(j)==')'){
+			if(pattern.get(j).equals(")")){
 				j++;
 			}
 			else {
 				error();
 			}
 		}
-		else {
-			error();
+		//if \ and dealing with edge case '\.'
+		else if(pattern.get(j).equals("\\")) {
+			j++;
+			if(!isNotEmpty()) {
+				error();
+			}
+			if(pattern.get(j).equals(".")) {
+				setState(state, "\\.", state+1, state+1);
+				r=state;
+				state++;
+				j++;
+			}
+			else {
+				setState(state, pattern.get(j), state+1, state+1);
+				r=state;
+				state++;
+				j++;
+			}
 		}
 		return(r);
 	}
