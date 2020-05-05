@@ -60,7 +60,7 @@ public class REsearch {
           }else{
             currentState = (int)tmp;
           }
-          if(currentState == 0 && pointer > mark){
+          if(currentState == -1){
             System.out.println("Match on line " + lineNum + ": " + line);
           }
           char chr;
