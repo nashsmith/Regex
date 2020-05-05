@@ -44,8 +44,9 @@ public class REsearch {
 
       //foreach letter in line
         //for all currentStates in deque (states before SCAN)
-        while(mark < line.length() && pointer < line.length()){
+      while(mark < line.length() && pointer < line.length()){
         while((tmp = states.get()) != null){
+          // System.out.println(tmp.toString());
           // System.out.println("Start:" + states.toString());
           if(tmp instanceof String){
             states.transferStates();
@@ -53,32 +54,35 @@ public class REsearch {
             if(states.isEmpty()){
               mark++;
               pointer = mark;
+              break;
             }else{
               pointer++;
             }
-            break;
+            continue;
           }else{
             currentState = (int)tmp;
           }
+          // System.out.println("Current State: " + currentState);
           if(currentState == -1){
             System.out.println("Match on line " + lineNum + ": " + line);
+            break;
           }
           char chr;
-          if(ch.get(currentState).length() > 1){
-            chr = '.';
-          // }else if(ch.get(currentState).equals('\u001b')){
-          }else if(ch.get(currentState).equals(" ")){
+          if(ch.get(currentState).charAt(0) == ' '){
             states.push(next1.get(currentState));
             states.push(next2.get(currentState));
             // System.out.println("After branch:" + states.toString());
-            break;
+            continue;
+          }
+          if(ch.get(currentState).length() > 1){
+            chr = '.';
           }else{
             chr = ch.get(currentState).charAt(0);
           }
           //if the pointer character matches the currentState character
           if(line.charAt(pointer) == chr){
             //add that states nextStates to the end of the deque
-            if(next1.get(currentState) == next2.get(currentState)){
+            if(next1.get(currentState).equals(next2.get(currentState))){
               states.put(next1.get(currentState));
             }else{
               states.put(next1.get(currentState));
@@ -87,6 +91,7 @@ public class REsearch {
           }else{
           //else the pointer character doesnt match
           }
+          // System.out.println("End:" + states.toString());
         }
         states = new Deque();
         states.push(startState);
