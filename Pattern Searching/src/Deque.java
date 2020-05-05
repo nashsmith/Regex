@@ -18,17 +18,18 @@ class Deque {
 
   public String toString(){
     Object[] nxt = nextStates.toArray();
-    String s = "***\n" + currentStates.toString();
-    s += "\n---\n";
+    String s = currentStates.toString();
+    // s += "\n---\n";
+    s += " |";
     for(Object ob: nxt){
       s += " " + ob.toString();
     }
-    s += "\n***";
+    // s += "\n***";
     return s;
   }
 
   public boolean isEmpty(){
-    return (nextStates.peek() == null && currentStates.peek() == "SCAN");
+    return (nextStates.peek() == null && (currentStates.peek() == "SCAN" || currentStates.peek() == null));
   }
 
   //Add a state into the current states
