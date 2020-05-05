@@ -36,7 +36,7 @@ public class REcompile {
 			error();
 		}
 		//set state
-		setState(state, " ", 0, 0);
+		setState(state, " ", -1, -1);
 		//write arrays to file
 		FileWriter writer = new FileWriter("output");
 		writer.write(Integer.toString(initial) + System.lineSeparator());
