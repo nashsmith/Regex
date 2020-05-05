@@ -1,12 +1,11 @@
 CFG rules
 E -> T
 E -> T|E
-T -> TE
+E -> TE
 T -> F
 T -> F*
-T -> F|T
 T -> F?
-F -> .
+T -> .
 F -> \C
 F -> v
 F -> (E)
@@ -24,4 +23,3 @@ Not legal examples
 (x
 x|
 x?|
-Any spaces
