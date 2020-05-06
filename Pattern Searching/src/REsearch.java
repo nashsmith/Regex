@@ -23,6 +23,7 @@ public class REsearch {
     String textFileName = args[1];
     String line; //read line of text into
     Object tmp;
+    String matchedChars = "";
     int lineNum = 0;
 
     //read FSM data and initialise ArrayLists
@@ -81,7 +82,7 @@ public class REsearch {
           //if the final state
           if(currentState == -1){
             //reoport the match
-            System.out.println("Match on line " + lineNum + ": " + line);
+            System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
             //increment pointers
             mark++;
             pointer = mark;
@@ -116,8 +117,9 @@ public class REsearch {
             //otherwise the character is the character
             chr = ch.get(currentState).charAt(0);
           }
-          //if the pointer character matches the currentState character
-          if(line.charAt(pointer) == chr){
+          //if the pointer character matches the currentState character OR WILDCARD
+          if(line.charAt(pointer) == chr || ch.get(currentState).charAt(0) == '.'){
+            matchedChars += line.charAt(pointer);
             //add that states nextStates to the end of the deque
             //if the states are the same then just add one of them
             if(next1.get(currentState).equals(next2.get(currentState))){
@@ -131,6 +133,7 @@ public class REsearch {
           }
           // System.out.println("End:" + states.toString());
         }
+        matchedChars = "";
         //reset the deque
         states = new Deque();
         //add the start state
