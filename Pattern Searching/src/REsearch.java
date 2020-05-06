@@ -6,6 +6,8 @@ public class REsearch {
   public static List<String> ch = new ArrayList<String>();
   public static List<Integer> next1 = new ArrayList<Integer>();
   public static List<Integer> next2 = new ArrayList<Integer>();
+  public static List<Boolean> seen = new ArrayList<Boolean>();
+
 
   public static int startState = 0;
   public static int mark;
@@ -14,6 +16,8 @@ public class REsearch {
   public static Deque states = new Deque();
 
   public static void main(String[] args) throws IOException{
+
+    // System.setIn(new FileInputStream(new File("output")));
 
     String fsmFileName = args[0];
     String textFileName = args[1];
@@ -65,7 +69,16 @@ public class REsearch {
           // System.out.println("Current State: " + currentState);
           if(currentState == -1){
             System.out.println("Match on line " + lineNum + ": " + line);
+            mark++;
+            pointer = mark;
             break;
+          }
+          if(seen.get(currentState)){
+            mark++;
+            pointer = mark;
+            break; //no match
+          }else{
+            seen.set(currentState, true);
           }
           char chr;
           if(ch.get(currentState).charAt(0) == ' '){
@@ -95,6 +108,7 @@ public class REsearch {
         }
         states = new Deque();
         states.push(startState);
+        resetSeenList();
 
       }
 
@@ -116,6 +130,13 @@ public class REsearch {
       //output the line
 
 
+  }
+
+  public static void resetSeenList(){
+    seen = new ArrayList<Boolean>();
+    for(int i = 0; i < ch.size(); i++){
+      seen.add(i, false);
+    }
   }
 
   /*
@@ -145,6 +166,7 @@ public class REsearch {
         ch.add(stateNum, c);
     		next1.add(stateNum, n1);
     		next2.add(stateNum, n2);
+        seen.add(stateNum, false);
       }
     }
 
