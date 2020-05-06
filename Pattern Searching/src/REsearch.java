@@ -1,18 +1,30 @@
+/*
+  COMPX301 Regex pattern searcher
+  Authors:  Nash Smith (1277758)
+            Konny Brown ()
+*/
+
+
 import java.util.*;
 import java.io.*;
 
 public class REsearch {
 
+  //FSM
   public static List<String> ch = new ArrayList<String>();
   public static List<Integer> next1 = new ArrayList<Integer>();
   public static List<Integer> next2 = new ArrayList<Integer>();
-  public static List<Boolean> seen = new ArrayList<Boolean>();
+  //
 
-
+  //Initial state of the FSM
   public static int startState = 0;
+  //Where in the line we are starting the current search from
   public static int mark;
+  //Which character we are comparing
   public static int pointer;
+  //Which state we are currently in
   public static int currentState;
+  //Deque of current states
   public static Deque states = new Deque();
 
   public static void main(String[] args) throws IOException{

@@ -1,15 +1,21 @@
+/*
+  COMPX301 Regex pattern searcher
+  Authors:  Konny Brown ()
+						Nash Smith (1277758)
+*/
+
 import java.util.*;
 import java.io.*;
 
 public class REcompile {
-	//Initialize pattern array and FSM 
+	//Initialize pattern array and FSM
 	public static List<String> pattern = new ArrayList<String>();
 	public static List<String> ch = new ArrayList<String>();
 	public static List<Integer> next1 = new ArrayList<Integer>();
 	public static List<Integer> next2 = new ArrayList<Integer>();
 	public static int state;
 	public static int j;
-	
+
 	/*Main Method*/
 	public static void main (String args[]) throws IOException {
 		//Take in pattern P (IO)
