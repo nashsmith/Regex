@@ -18,11 +18,20 @@ class Deque {
 
   public String toString(){
     Object[] nxt = nextStates.toArray();
-    String s = currentStates.toString();
+    String s = "";
+
+    Stack tmp = (Stack)currentStates.clone();
     // s += "\n---\n";
-    s += " |";
+    while(!tmp.empty()){
+      Object i = tmp.pop();
+      if(i instanceof String){
+        s += i + " ";
+      }else{
+        s += i + " ";
+      }
+    }
     for(Object ob: nxt){
-      s += " " + ob.toString();
+      s += ob.toString() + " ";
     }
     // s += "\n***";
     return s;
