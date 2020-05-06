@@ -34,21 +34,23 @@ public class REsearch {
     String fsmFileName = args[0];
     String textFileName = args[1];
     String line; //read line of text into
-    Object tmp;
-    String matchedChars = "";
-    int lineNum = 0;
+    Object tmp; //pop deque into
+    String matchedChars = ""; //keep track of the current string matched
+    int lineNum = 0; //keep track of which line the match is one
 
     //read FSM data and initialise ArrayLists
     importFSM(fsmFileName);
     System.out.println("Imported...");
+
+    //Display FSM
     System.out.println(ch.toString());
     System.out.println(next1.toString());
     System.out.println(next2.toString());
 
     //Add the first state to the deque of states
     states.push(startState);
-    System.out.println(startState);
-    System.out.println(states.toString());
+    System.out.println("Initial State: " + startState);
+    System.out.println("Initial Deque: " + states.toString());
 
     //get file inputstream from args
     BufferedReader textFile = new BufferedReader(new FileReader(new File(textFileName)));
@@ -66,13 +68,10 @@ public class REsearch {
       while(mark < line.length() && pointer < line.length()){
         //for all currentStates in deque
         while((tmp = states.get()) != null && pointer < line.length()){
-          // System.out.println(tmp.toString());
-          // System.out.println("Start:" + states.toString());
           //if the state is actually the SCAN
           if(tmp instanceof String){
             //move the next states to the current states
             states.transferStates();
-            // System.out.println("After transfer:" + states.toString());
             //if there is nothing or just the SCAN in the deque
             if(states.isEmpty()){
               //increment pointers
@@ -83,14 +82,12 @@ public class REsearch {
             }else{
               //otherwise you are checking the next character
               pointer++;
-              //TODO MAYBE: reset seen list
             }
             //get the next state (restarts the loop)
             continue;
           }else{
             currentState = (int)tmp;
           }
-          // System.out.println("Current State: " + currentState);
           //if the final state
           if(currentState == -1){
             //reoport the match
@@ -102,23 +99,12 @@ public class REsearch {
             break;
           }
 
-          /*
-          if(seen.get(currentState)){
-            mark++;
-            pointer = mark;
-            break; //no match
-          }else{
-            seen.set(currentState, true);
-          }
-          */
-
           char chr;
           //if char is a space then its a branching state
           if(ch.get(currentState).charAt(0) == ' '){
             //add the two next states to the front of the deque
             states.push(next1.get(currentState));
             states.push(next2.get(currentState));
-            // System.out.println("After branch:" + states.toString());
             //get the next state
             continue;
           }
@@ -143,7 +129,6 @@ public class REsearch {
           }else{
           //else the pointer character doesnt match
           }
-          // System.out.println("End:" + states.toString());
         }
         matchedChars = "";
         //reset the deque
@@ -157,31 +142,7 @@ public class REsearch {
     }
 
     System.out.println("Search Finished.");
-
-
-
-    //when there are no more currentStates to check
-      //transferStates on the Deque
-      //increment pointer
-
-    //if there are nextStates then repeat
-
-    //if there are no nextStates there were no matches
-
-    //if at any point -1 is a currentState then there was a full pattern match
-      //output the line
-
-
   }
-
-  /*
-  public static void resetSeenList(){
-    seen = new ArrayList<Boolean>();
-    for(int i = 0; i < ch.size(); i++){
-      seen.add(i, false);
-    }
-  }
-  */
 
   /*
    *  Takes a text file from REcompile and turns it into the three ArrayLists
@@ -210,7 +171,6 @@ public class REsearch {
         ch.add(stateNum, c);
     		next1.add(stateNum, n1);
     		next2.add(stateNum, n2);
-        seen.add(stateNum, false);
       }
     }
 
