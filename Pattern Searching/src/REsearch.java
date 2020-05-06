@@ -32,6 +32,7 @@ public class REsearch {
     System.out.println(next1.toString());
     System.out.println(next2.toString());
 
+    //Add the first state to the deque of states
     states.push(startState);
     System.out.println(startState);
     System.out.println(states.toString());
@@ -40,39 +41,55 @@ public class REsearch {
     BufferedReader textFile = new BufferedReader(new FileReader(new File(textFileName)));
 
     System.out.println("Starting search...");
-    //read the file line by line into an array of characters
+
+    //Read the file line by line
     while((line = textFile.readLine()) != null){
-      lineNum++;
+      lineNum++; //count which line we are on to report a match
+      //pointers at first character on the line
       pointer = 0;
       mark = 0;
 
       //foreach letter in line
-        //for all currentStates in deque (states before SCAN)
       while(mark < line.length() && pointer < line.length()){
+        //for all currentStates in deque
         while((tmp = states.get()) != null){
           // System.out.println(tmp.toString());
           // System.out.println("Start:" + states.toString());
+          //if the state is actually the SCAN
           if(tmp instanceof String){
+            //move the next states to the current states
             states.transferStates();
             // System.out.println("After transfer:" + states.toString());
+            //if there is nothing or just the SCAN in the deque
             if(states.isEmpty()){
+              //increment pointers
               mark++;
               pointer = mark;
+              //go to the next letter
               break;
             }else{
+              //otherwise you are checking the next character
               pointer++;
+              //TODO MAYBE: reset seen list
             }
+            //get the next state (restarts the loop)
             continue;
           }else{
             currentState = (int)tmp;
           }
           // System.out.println("Current State: " + currentState);
+          //if the final state
           if(currentState == -1){
+            //reoport the match
             System.out.println("Match on line " + lineNum + ": " + line);
+            //increment pointers
             mark++;
             pointer = mark;
+            //reset deque && go to next character
             break;
           }
+
+          /*
           if(seen.get(currentState)){
             mark++;
             pointer = mark;
@@ -80,21 +97,29 @@ public class REsearch {
           }else{
             seen.set(currentState, true);
           }
+          */
+
           char chr;
+          //if char is a space then its a branching state
           if(ch.get(currentState).charAt(0) == ' '){
+            //add the two next states to the front of the deque
             states.push(next1.get(currentState));
             states.push(next2.get(currentState));
             // System.out.println("After branch:" + states.toString());
+            //get the next state
             continue;
           }
+          //if the char is actually a string then its an escaped period
           if(ch.get(currentState).length() > 1){
             chr = '.';
           }else{
+            //otherwise the character is the character
             chr = ch.get(currentState).charAt(0);
           }
           //if the pointer character matches the currentState character
           if(line.charAt(pointer) == chr){
             //add that states nextStates to the end of the deque
+            //if the states are the same then just add one of them
             if(next1.get(currentState).equals(next2.get(currentState))){
               states.put(next1.get(currentState));
             }else{
@@ -106,9 +131,11 @@ public class REsearch {
           }
           // System.out.println("End:" + states.toString());
         }
+        //reset the deque
         states = new Deque();
+        //add the start state
         states.push(startState);
-        resetSeenList();
+        // resetSeenList();
 
       }
 
@@ -132,12 +159,14 @@ public class REsearch {
 
   }
 
+  /*
   public static void resetSeenList(){
     seen = new ArrayList<Boolean>();
     for(int i = 0; i < ch.size(); i++){
       seen.add(i, false);
     }
   }
+  */
 
   /*
    *  Takes a text file from REcompile and turns it into the three ArrayLists
