@@ -52,7 +52,7 @@ public class REsearch {
       //foreach letter in line
       while(mark < line.length() && pointer < line.length()){
         //for all currentStates in deque
-        while((tmp = states.get()) != null){
+        while((tmp = states.get()) != null && pointer < line.length()){
           // System.out.println(tmp.toString());
           // System.out.println("Start:" + states.toString());
           //if the state is actually the SCAN
