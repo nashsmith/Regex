@@ -1,3 +1,9 @@
+/*
+  COMPX301 Regex pattern searcher
+  Authors:  Nash Smith (1277758)
+            Konny Shim (1171612)
+*/
+
 import java.util.Stack;
 import java.util.Queue;
 import java.util.LinkedList;
