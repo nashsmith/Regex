@@ -158,7 +158,7 @@ public class REcompile {
 			state++;
 		}
 		//if ? sets states appropriately
-		if(isNotEmpty() && isVocab(pattern.get(j)) && pattern.get(j).equals("?")) {
+		if(isNotEmpty() && isVocab(pattern.get(j-1)) && pattern.get(j).equals("?")) {
 			setState(state," ",r, state+1);
 			if(f >= 0) {
 				next1.set(f, state);
