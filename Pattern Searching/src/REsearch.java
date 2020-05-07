@@ -29,15 +29,14 @@ public class REsearch {
 
   public static void main(String[] args) throws IOException{
 
-    String fsmFileName = args[0];
-    String textFileName = args[1];
+    String textFileName = args[0];
     String line; //read line of text into
     Object tmp; //pop deque into
     String matchedChars = ""; //keep track of the current string matched
     int lineNum = 0; //keep track of which line the match is one
 
 
-    importFSM(fsmFileName);
+    importFSM();
     System.out.println("Imported...");
 
     //Display FSM
@@ -149,9 +148,8 @@ public class REsearch {
    *  Takes a text file from REcompile and turns it into the three ArrayLists
    *  representing the Finite State Machine.
    */
-  public static void importFSM(String fileName) throws IOException{
-    File file = new File(fileName);
-    BufferedReader fsm = new BufferedReader(new FileReader(file));
+  public static void importFSM() throws IOException{
+    BufferedReader fsm = new BufferedReader(new InputStreamReader(System.in));
     String line;
     Boolean firstRead = true;
 
