@@ -29,8 +29,6 @@ public class REsearch {
 
   public static void main(String[] args) throws IOException{
 
-    // System.setIn(new FileInputStream(new File("output")));
-
     String fsmFileName = args[0];
     String textFileName = args[1];
     String line; //read line of text into
@@ -38,7 +36,7 @@ public class REsearch {
     String matchedChars = ""; //keep track of the current string matched
     int lineNum = 0; //keep track of which line the match is one
 
-    //read FSM data and initialise ArrayLists
+
     importFSM(fsmFileName);
     System.out.println("Imported...");
 
@@ -57,91 +55,94 @@ public class REsearch {
 
     System.out.println("Starting search...");
 
-    //Read the file line by line
     while((line = textFile.readLine()) != null){
-      lineNum++; //count which line we are on to report a match
-      //pointers at first character on the line
-      pointer = 0;
+      char currentCharacter;
+      lineNum++;
       mark = 0;
-
-      //foreach letter in line
+      pointer = 0;
+      // System.out.println("Reading line " + lineNum);
+      //for each character on the line
       while(mark < line.length() && pointer < line.length()){
-        //for all currentStates in deque
-        while((tmp = states.get()) != null && pointer < line.length()){
-          //if the state is actually the SCAN
+        // currentCharacter = line.charAt(pointer);
+        // System.out.println("Mark and pointer fine");
+        while((tmp = states.get()) != null){
+          // System.out.println("Mark" + mark + " Pointer: " + pointer);
+          // System.out.println("Start: " + states.toString());
           if(tmp instanceof String){
-            //move the next states to the current states
             states.transferStates();
-            //if there is nothing or just the SCAN in the deque
             if(states.isEmpty()){
-              //increment pointers
-              mark++;
-              pointer = mark;
-              //go to the next letter
+              // mark++;
+              // pointer = mark;
+              // System.out.println("Empty: " + states.toString());
               break;
-            }else{
-              //otherwise you are checking the next character
-              pointer++;
             }
-            //get the next state (restarts the loop)
+            pointer++;
+            // System.out.println("End: " + states.toString());
             continue;
-          }else{
-            currentState = (int)tmp;
           }
-          //if the final state
-          if(currentState == -1){
-            //reoport the match
-            System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
-            //increment pointers
-            mark++;
-            pointer = mark;
-            //reset deque && go to next character
+
+          if(pointer >= line.length()){
             break;
           }
 
-          char chr;
-          //if char is a space then its a branching state
+          currentState = (int)tmp;
+          // System.out.println("currentState: " + currentState);
+
+          //If match finished
+          if(currentState == -1){
+            //report the match
+            System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
+            //increment pointers
+            // mark++;
+            // pointer = mark;
+            //reset deque && go to next character
+            continue; //TODO break further
+          }
+
           if(ch.get(currentState).charAt(0) == ' '){
             //add the two next states to the front of the deque
-            states.push(next1.get(currentState));
-            states.push(next2.get(currentState));
-            //get the next state
-            continue;
-          }
-          //if the char is actually a string then its an escaped period
-          if(ch.get(currentState).length() > 1){
-            chr = '.';
-          }else{
-            //otherwise the character is the character
-            chr = ch.get(currentState).charAt(0);
-          }
-          //if the pointer character matches the currentState character OR WILDCARD
-          if(line.charAt(pointer) == chr || ch.get(currentState).charAt(0) == '.'){
-            matchedChars += line.charAt(pointer);
-            //add that states nextStates to the end of the deque
-            //if the states are the same then just add one of them
             if(next1.get(currentState).equals(next2.get(currentState))){
               states.put(next1.get(currentState));
             }else{
               states.put(next1.get(currentState));
               states.put(next2.get(currentState));
             }
-          }else{
-          //else the pointer character doesnt match
+            //get the next state
+            continue;
           }
+
+          char compareChar = ch.get(currentState).charAt(0);
+          if(compareChar == '\\'){
+            compareChar = '.';
+          }
+
+          // System.out.println(line.charAt(pointer) + " " + compareChar);
+          if(line.charAt(pointer) == compareChar || ch.get(currentState).charAt(0) == '.'){
+            matchedChars += line.charAt(pointer);
+
+            if(next1.get(currentState).equals(next2.get(currentState))){
+              states.put(next1.get(currentState));
+            }else{
+              states.put(next1.get(currentState));
+              states.put(next2.get(currentState));
+            }
+
+          }
+
+
+            // System.out.println("End: " + states.toString());
         }
+        mark++;
+        pointer = mark;
+        //no more states
         matchedChars = "";
-        //reset the deque
         states = new Deque();
-        //add the start state
         states.push(startState);
-        // resetSeenList();
 
       }
 
     }
 
-    System.out.println("Search Finished.");
   }
 
   /*
@@ -169,8 +170,8 @@ public class REsearch {
 
         //add the entry to the finite state machine
         ch.add(stateNum, c);
-    		next1.add(stateNum, n1);
-    		next2.add(stateNum, n2);
+        next1.add(stateNum, n1);
+        next2.add(stateNum, n2);
       }
     }
 
