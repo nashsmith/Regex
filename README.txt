@@ -23,3 +23,5 @@ Not legal examples
 (x
 x|
 x?|
+a*? (alternation provides same as option anyway)
+a?* (makes little sense also)

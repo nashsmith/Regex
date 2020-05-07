@@ -150,13 +150,17 @@ public class REcompile {
 		r = t1 = factor();
 		//if * sets states appropriately
 		if(isNotEmpty() && pattern.get(j).equals("*")){
-			setState(state," ",state+1,t1);
+			setState(state," ",state+1, t1);
+			if(f >= 0) {
+				next1.set(f, state);
+			}
 			j++;
+			f=state-1;
 			r=state;
 			state++;
 		}
 		//if ? sets states appropriately
-		if(isNotEmpty() && pattern.get(j).equals("?")) {
+		if(isNotEmpty() && isVocab(pattern.get(j)) && pattern.get(j).equals("?")) {
 			setState(state," ",r, state+1);
 			if(f >= 0) {
 				next1.set(f, state);
