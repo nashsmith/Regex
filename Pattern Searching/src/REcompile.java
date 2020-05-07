@@ -44,12 +44,10 @@ public class REcompile {
 		//set state
 		setState(state, " ", -1, -1);
 		//write arrays to file
-		FileWriter writer = new FileWriter("output");
-		writer.write(Integer.toString(initial) + System.lineSeparator());
+		System.out.println(Integer.toString(initial));
 		for(int i = 0; i < ch.size(); i++) {
-			writer.write(Integer.toString(i) + ',' + ch.get(i) + ',' + next1.get(i) + ',' + next2.get(i) + System.lineSeparator());
+			System.out.println(Integer.toString(i) + ',' + ch.get(i) + ',' + next1.get(i) + ',' + next2.get(i));
 		}
-		writer.close();
 		
 	}
 	
