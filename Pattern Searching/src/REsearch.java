@@ -37,93 +37,102 @@ public class REsearch {
 
 
     importFSM();
-    System.out.println("Imported...");
+    // System.out.println("Imported...");
 
     //Display FSM
-    System.out.println(ch.toString());
-    System.out.println(next1.toString());
-    System.out.println(next2.toString());
+    // System.out.println(ch.toString());
+    // System.out.println(next1.toString());
+    // System.out.println(next2.toString());
 
     //Add the first state to the deque of states
     states.push(startState);
-    System.out.println("Initial State: " + startState);
-    System.out.println("Initial Deque: " + states.toString());
+    // System.out.println("Initial State: " + startState);
+    // System.out.println("Initial Deque: " + states.toString());
 
     //get file inputstream from args
     BufferedReader textFile = new BufferedReader(new FileReader(new File(textFileName)));
 
-    System.out.println("Starting search...");
+    // System.out.println("Starting search...");
 
+    //while there is more lines to read
     while((line = textFile.readLine()) != null){
-      char currentCharacter;
+      //increment the linenumber
       lineNum++;
+      //reset marker and pointer to start of line
       mark = 0;
       pointer = 0;
-      // System.out.println("Reading line " + lineNum);
       //for each character on the line
+      //labeled loop for a deep break
       character:
       while(mark < line.length() && pointer < line.length()){
-        // currentCharacter = line.charAt(pointer);
-        // System.out.println("Mark and pointer fine");
+
+        //while there are states in the Deque
         while((tmp = states.get()) != null){
-          // System.out.println("Mark" + mark + " Pointer: " + pointer);
-          // System.out.println("Start: " + states.toString());
+          //if the popped state is the SCAN
           if(tmp instanceof String){
+            //move the nextStates to the currentStates in the deque
             states.transferStates();
+            //if only the SCAN is in the deque
             if(states.isEmpty()){
-              // mark++;
-              // pointer = mark;
-              // System.out.println("Empty: " + states.toString());
+              //No match, break out and reset deque/increment mark&pointer
               break;
             }
+            //if theres more states they are to be checked on the next character
             pointer++;
-            // System.out.println("End: " + states.toString());
+            //restart the loop to get the next state, currently has the SCAN
             continue;
           }
 
+          //if the pointer is now past the last character
           if(pointer >= line.length()){
+            //ran out of characters, NO MATCH
             break;
           }
 
+          //cast the popped state to an int, it is not the SCAN
           currentState = (int)tmp;
-          // System.out.println("currentState: " + currentState);
 
           //If match finished
           if(currentState == -1){
             //report the match
             System.out.println(line);
-            // System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
-            //increment pointers
-            // mark++;
-            // pointer = mark;
-            //reset deque && go to next character
+            //reset the recorded match
             matchedChars = "";
+            //re-init the deque with the startState and SCAN
             states = new Deque();
             states.push(startState);
-            break character; //TODO break further
+            //break to get a new line of text (only need to report each matched line once)
+            break character;
           }
 
+          //if the state is a branching state
           if(ch.get(currentState).charAt(0) == ' '){
             //add the two next states to the front of the deque
+            //if the two next states are the same then just add one of them
             if(next1.get(currentState).equals(next2.get(currentState))){
               states.put(next1.get(currentState));
             }else{
               states.put(next1.get(currentState));
               states.put(next2.get(currentState));
             }
-            //get the next state
+            //get the next state, restart the loop
             continue;
           }
 
+          //char to compare is that in the current state
           char compareChar = ch.get(currentState).charAt(0);
-          if(compareChar == '\\'){
+          //a period needs to be escaped so if the string is of length 2 its a period
+          if(ch.get(currentState).length() > 1){
             compareChar = '.';
           }
 
-          // System.out.println(line.charAt(pointer) + " " + compareChar);
+          //if the currentCharacter matches the state character or if the state is a wildcard
           if(line.charAt(pointer) == compareChar || ch.get(currentState).charAt(0) == '.'){
+            //add the matched char to the matched string so far (not used after submitting)
             matchedChars += line.charAt(pointer);
 
+            //add the next states to the Deque
+            //if they are the same then just add one
             if(next1.get(currentState).equals(next2.get(currentState))){
               states.put(next1.get(currentState));
             }else{
@@ -132,14 +141,14 @@ public class REsearch {
             }
 
           }
-
-
-            // System.out.println("End: " + states.toString());
         }
+        //No More States
+        //increment mark and pointer
         mark++;
         pointer = mark;
-        //no more states
+        //reset matched chars
         matchedChars = "";
+        //re-init deque
         states = new Deque();
         states.push(startState);
 
