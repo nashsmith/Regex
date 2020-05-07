@@ -151,10 +151,6 @@ public class REcompile {
 		//if * sets states appropriately
 		if(isNotEmpty() && pattern.get(j).equals("*")){
 			setState(state," ",state+1,t1);
-			if(f >= 0) {
-				next1.set(f, state);
-				next2.set(f, state);
-			}
 			j++;
 			r=state;
 			state++;
