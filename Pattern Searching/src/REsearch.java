@@ -1,7 +1,7 @@
 /*
   COMPX301 Regex pattern searcher
   Authors:  Nash Smith (1277758)
-            Konny Brown ()
+            Konny Shim (1171612)
 */
 
 

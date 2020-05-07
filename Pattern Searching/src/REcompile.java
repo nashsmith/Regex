@@ -1,7 +1,7 @@
 /*
   COMPX301 Regex pattern searcher
-  Authors:  Konny Brown ()
-						Nash Smith (1277758)
+  Authors:  Konny Shim (1171612)
+			Nash Smith (1277758)
 */
 
 import java.util.*;
