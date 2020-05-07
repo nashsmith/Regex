@@ -61,6 +61,7 @@ public class REsearch {
       pointer = 0;
       // System.out.println("Reading line " + lineNum);
       //for each character on the line
+      character:
       while(mark < line.length() && pointer < line.length()){
         // currentCharacter = line.charAt(pointer);
         // System.out.println("Mark and pointer fine");
@@ -90,12 +91,16 @@ public class REsearch {
           //If match finished
           if(currentState == -1){
             //report the match
-            System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
+            System.out.println(line);
+            // System.out.println("Match on line " + lineNum + ": " + matchedChars + " | " + line);
             //increment pointers
             // mark++;
             // pointer = mark;
             //reset deque && go to next character
-            continue; //TODO break further
+            matchedChars = "";
+            states = new Deque();
+            states.push(startState);
+            break character; //TODO break further
           }
 
           if(ch.get(currentState).charAt(0) == ' '){
