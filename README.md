@@ -5,7 +5,7 @@
 **Assignment Grade:** A+ (96%)
 
 
-CFG rules
+**CFG rules**
 
 E -> T\
 E -> T|E\
@@ -24,8 +24,8 @@ F = factor\
 v = vocabulary\
 C = any character\
 \
-Not legal examples\
 
+**Not legal examples** \
 ** \
 ?? \
 .\ \
