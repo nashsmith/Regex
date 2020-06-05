@@ -1,5 +1,6 @@
 # Regex Pattern Searching
 ### A home made Regex parser and pattern searcher
+#### By Nash Smith & Konny Shim
 
 **Assignment Grade:** A+ (96%)
 
