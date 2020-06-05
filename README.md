@@ -1,3 +1,9 @@
+# Regex Pattern Searching
+### A home made Regex parser and pattern searcher
+
+**Assignment Grade:** A+ (96%)
+
+
 CFG rules
 E -> T
 E -> T|E
